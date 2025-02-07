@@ -14,7 +14,7 @@ interface Message {
 export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
-  const [selectedModelIndex, setSelectedModelIndex] = useState<IndexPath>(new IndexPath(0));
+  // const [selectedModelIndex, setSelectedModelIndex] = useState<IndexPath>(new IndexPath(0));
   const [isFocused, setIsFocused] = useState(false);
 
   const handleSend = () => {
