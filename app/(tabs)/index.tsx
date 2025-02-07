@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { ApplicationProvider, Layout, Input, Button, List, ListItem, Text, TopNavigation, Select, SelectItem, IndexPath } from '@ui-kitten/components';
+import { StyleSheet, View, Dimensions } from 'react-native';
+import { ApplicationProvider, Layout, Input, Button, List, Text, TopNavigation, Select, SelectItem, IndexPath } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
+
+const { width, height } = Dimensions.get('window');
 
 interface Message {
   id: number;
   text: string;
+  sender: 'user' | 'bot';
 }
 
 export default function ChatScreen() {
@@ -16,14 +19,23 @@ export default function ChatScreen() {
 
   const handleSend = () => {
     if (inputText.trim()) {
-      setMessages([...messages, { text: inputText, id: messages.length }]);
+      setMessages([...messages, { text: inputText, id: messages.length, sender: 'user' }]);
+
+      setTimeout(() => {
+        setMessages(prevMessages => [...prevMessages, { text: 'This is a bot response', id: prevMessages.length + 1, sender: 'bot' }]);
+      }, 1000); 
       setInputText('');
       setIsFocused(false);
     }
   };
 
   const renderItem = ({ item }: { item: Message }) => (
-    <ListItem title={<Text>{item.text}</Text>} />
+    <View style={[
+      styles.messageContainer,
+      item.sender === 'user' ? styles.userMessage : styles.botMessage
+    ]}>
+      <Text style={styles.messageText}>{item.text}</Text>
+    </View>
   );
 
   const renderModelSelect = () => (
@@ -81,23 +93,24 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    paddingTop: '10%',
+    padding: width * 0.025, 
+    paddingTop: height * 0.1,
   },
   title: {
-    fontSize: 32, // Tamaño de fuente más grande para el título
+    fontSize: width * 0.08,
     fontWeight: 'bold',
-    textAlign: 'center', // Centrar el texto
-    padding: 10, // Agregar relleno
+    textAlign: 'center',
+    padding: width * 0.025, 
+    color: '#FFFFFF',
   },
   selectContainer: {
-    marginTop: 10,
-    marginBottom: 10,
-    alignItems: 'flex-start', // Alinear el select a la izquierda
+    marginTop: height * 0.01,
+    marginBottom: height * 0.01, 
+    alignItems: 'flex-start',
   },
   messageList: {
     flex: 1,
-    marginBottom: '2%',
+    marginBottom: height * 0.02, 
   },
   inputContainer: {
     flexDirection: 'row',
@@ -105,9 +118,28 @@ const styles = StyleSheet.create({
   },
   textArea: {
     flex: 1,
-    marginRight: '2%',
+    marginRight: width * 0.02,
   },
   select: {
-    width: '60%', // Usar porcentaje para el ancho del select
+    width: width * 0.6,
+  },
+  messageContainer: {
+    maxWidth: width * 0.8, 
+    borderRadius: 10,
+    padding: width * 0.02,
+    marginVertical: height * 0.01, 
+    marginHorizontal: width * 0.02,
+  },
+  userMessage: {
+    backgroundColor: '#4CAF50',
+    alignSelf: 'flex-end',
+  },
+  botMessage: {
+    backgroundColor: '#607D8B',
+    alignSelf: 'flex-start',
+  },
+  messageText: {
+    fontSize: width * 0.04,
+    color: '#FFFFFF',
   },
 });
