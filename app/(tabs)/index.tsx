@@ -131,11 +131,11 @@ const styles = StyleSheet.create({
     marginHorizontal: width * 0.02,
   },
   userMessage: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#27304f',
     alignSelf: 'flex-end',
   },
   botMessage: {
-    backgroundColor: '#607D8B',
+    backgroundColor: '#27304f',
     alignSelf: 'flex-start',
   },
   messageText: {
