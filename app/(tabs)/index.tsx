@@ -38,24 +38,24 @@ export default function ChatScreen() {
     </View>
   );
 
-  const renderModelSelect = () => (
-    <Select
-      style={styles.select}
-      selectedIndex={selectedModelIndex}
-      onSelect={index => setSelectedModelIndex(index as IndexPath)}
-      value={models[selectedModelIndex.row].label}
-    >
-      {models.map((model, index) => (
-        <SelectItem title={model.label} key={index} />
-      ))}
-    </Select>
-  );
+  // const renderModelSelect = () => (
+  //   <Select
+  //     style={styles.select}
+  //     selectedIndex={selectedModelIndex}
+  //     onSelect={index => setSelectedModelIndex(index as IndexPath)}
+  //     value={models[selectedModelIndex.row].label}
+  //   >
+  //     {models.map((model, index) => (
+  //       <SelectItem title={model.label} key={index} />
+  //     ))}
+  //   </Select>
+  // );
 
-  const models = [
-    { label: 'GPT-3.5', value: 'gpt-3.5-turbo' },
-    { label: 'GPT-4o', value: 'gpt-4o' },
-    { label: 'GPT-4o-Mini', value: 'gpt-4o-mini' },
-  ];
+  // const models = [
+  //   { label: 'GPT-3.5', value: 'gpt-3.5-turbo' },
+  //   { label: 'GPT-4o', value: 'gpt-4o' },
+  //   { label: 'GPT-4o-Mini', value: 'gpt-4o-mini' },
+  // ];
 
   return (
     <ApplicationProvider {...eva} theme={eva.dark}>
@@ -64,9 +64,9 @@ export default function ChatScreen() {
           alignment='center'
           title={() => <Text style={styles.title}>Chatbot</Text>}
         />
-        <View style={styles.selectContainer}>
+        {/* <View style={styles.selectContainer}>
           {renderModelSelect()}
-        </View>
+        </View> */}
         <List
           data={messages}
           renderItem={renderItem}
