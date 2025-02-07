@@ -25,10 +25,8 @@ export default function ChatScreen() {
         setMessages(prevMessages => [...prevMessages, { text: 'This is a bot response', id: prevMessages.length + 1, sender: 'bot' }]);
       }, 1000); 
       setInputText('');
-      setIsFocused(false);
     }
   };
-
   const renderItem = ({ item }: { item: Message }) => (
     <View style={[
       styles.messageContainer,
@@ -73,14 +71,14 @@ export default function ChatScreen() {
           style={styles.messageList}
         />
         <View style={styles.inputContainer}>
-          <Input
+        <Input
             style={styles.textArea}
             value={inputText}
             onChangeText={setInputText}
             placeholder="Type your message"
             multiline={isFocused}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(inputText.trim() === '')}
+            onBlur={() => setIsFocused(false)} 
             textStyle={isFocused ? { minHeight: 64 } : {}}
           />
           <Button onPress={handleSend}>Send</Button>
