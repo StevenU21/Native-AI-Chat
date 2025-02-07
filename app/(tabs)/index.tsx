@@ -29,15 +29,19 @@ export default function ChatScreen() {
       style={styles.select}
       selectedIndex={selectedModelIndex}
       onSelect={index => setSelectedModelIndex(index as IndexPath)}
-      value={models[selectedModelIndex.row]}
+      value={models[selectedModelIndex.row].label}
     >
       {models.map((model, index) => (
-        <SelectItem title={model} key={index} />
+        <SelectItem title={model.label} key={index} />
       ))}
     </Select>
   );
 
-  const models = ['GPT-4', 'GPT-3.5', 'GPT-3'];
+  const models = [
+    { label: 'GPT-3.5', value: 'gpt-3.5-turbo' },
+    { label: 'GPT-4o', value: 'gpt-4o' },
+    { label: 'GPT-4o-Mini', value: 'gpt-4o-mini' },
+  ];
 
   return (
     <ApplicationProvider {...eva} theme={eva.dark}>
@@ -75,12 +79,15 @@ const styles = StyleSheet.create({
     paddingTop: '10%',
   },
   title: {
-    fontSize: 24,
+    fontSize: 32, // Tamaño de fuente más grande para el título
     fontWeight: 'bold',
+    textAlign: 'center', // Centrar el texto
+    padding: 10, // Agregar relleno
   },
   selectContainer: {
     marginTop: 10,
     marginBottom: 10,
+    alignItems: 'flex-start', // Alinear el select a la izquierda
   },
   messageList: {
     flex: 1,
@@ -95,6 +102,6 @@ const styles = StyleSheet.create({
     marginRight: '2%',
   },
   select: {
-    width: '50%',
+    width: '60%', // Usar porcentaje para el ancho del select
   },
 });
