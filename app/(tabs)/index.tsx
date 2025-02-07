@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, Dimensions } from 'react-native';
 import { ApplicationProvider, Layout, Input, Button, List, Text, TopNavigation, Select, SelectItem, IndexPath } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
@@ -14,19 +14,27 @@ interface Message {
 export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
-  // const [selectedModelIndex, setSelectedModelIndex] = useState<IndexPath>(new IndexPath(0));
   const [isFocused, setIsFocused] = useState(false);
+  const listRef = useRef<List>(null);
+
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollToEnd({ animated: true });
+    }
+  }, [messages]);
 
   const handleSend = () => {
     if (inputText.trim()) {
-      setMessages([...messages, { text: inputText, id: messages.length, sender: 'user' }]);
-
-      setTimeout(() => {
-        setMessages(prevMessages => [...prevMessages, { text: 'This is a bot response', id: prevMessages.length + 1, sender: 'bot' }]);
-      }, 1000); 
+      const newMessage: Message = { text: inputText, id: messages.length, sender: 'user' };
+      setMessages([...messages, newMessage]);
       setInputText('');
+  
+      setTimeout(() => {
+        setMessages(prevMessages => [...prevMessages, { text: 'This is a bot response', id: prevMessages.length, sender: 'bot' }]);
+      }, 1000);
     }
   };
+
   const renderItem = ({ item }: { item: Message }) => (
     <View style={[
       styles.messageContainer,
@@ -36,25 +44,6 @@ export default function ChatScreen() {
     </View>
   );
 
-  // const renderModelSelect = () => (
-  //   <Select
-  //     style={styles.select}
-  //     selectedIndex={selectedModelIndex}
-  //     onSelect={index => setSelectedModelIndex(index as IndexPath)}
-  //     value={models[selectedModelIndex.row].label}
-  //   >
-  //     {models.map((model, index) => (
-  //       <SelectItem title={model.label} key={index} />
-  //     ))}
-  //   </Select>
-  // );
-
-  // const models = [
-  //   { label: 'GPT-3.5', value: 'gpt-3.5-turbo' },
-  //   { label: 'GPT-4o', value: 'gpt-4o' },
-  //   { label: 'GPT-4o-Mini', value: 'gpt-4o-mini' },
-  // ];
-
   return (
     <ApplicationProvider {...eva} theme={eva.dark}>
       <Layout style={styles.container}>
@@ -62,23 +51,21 @@ export default function ChatScreen() {
           alignment='center'
           title={() => <Text style={styles.title}>Chatbot</Text>}
         />
-        {/* <View style={styles.selectContainer}>
-          {renderModelSelect()}
-        </View> */}
         <List
+          ref={listRef}
           data={messages}
           renderItem={renderItem}
           style={styles.messageList}
         />
         <View style={styles.inputContainer}>
-        <Input
+          <Input
             style={styles.textArea}
             value={inputText}
             onChangeText={setInputText}
             placeholder="Type your message"
             multiline={isFocused}
             onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)} 
+            onBlur={() => setIsFocused(false)}
             textStyle={isFocused ? { minHeight: 64 } : {}}
           />
           <Button onPress={handleSend}>Send</Button>
@@ -91,24 +78,19 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: width * 0.025, 
+    padding: width * 0.025,
     paddingTop: height * 0.1,
   },
   title: {
     fontSize: width * 0.08,
     fontWeight: 'bold',
     textAlign: 'center',
-    padding: width * 0.025, 
+    padding: width * 0.025,
     color: '#FFFFFF',
-  },
-  selectContainer: {
-    marginTop: height * 0.01,
-    marginBottom: height * 0.01, 
-    alignItems: 'flex-start',
   },
   messageList: {
     flex: 1,
-    marginBottom: height * 0.02, 
+    marginBottom: height * 0.02,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -118,14 +100,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: width * 0.02,
   },
-  select: {
-    width: width * 0.6,
-  },
   messageContainer: {
-    maxWidth: width * 0.8, 
+    maxWidth: width * 0.8,
     borderRadius: 10,
     padding: width * 0.02,
-    marginVertical: height * 0.01, 
+    marginVertical: height * 0.01,
     marginHorizontal: width * 0.02,
   },
   userMessage: {
