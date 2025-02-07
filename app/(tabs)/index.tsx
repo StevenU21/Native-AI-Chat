@@ -12,11 +12,13 @@ export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
   const [selectedModelIndex, setSelectedModelIndex] = useState<IndexPath>(new IndexPath(0));
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSend = () => {
     if (inputText.trim()) {
       setMessages([...messages, { text: inputText, id: messages.length }]);
       setInputText('');
+      setIsFocused(false);
     }
   };
 
@@ -60,10 +62,14 @@ export default function ChatScreen() {
         />
         <View style={styles.inputContainer}>
           <Input
-            style={styles.input}
+            style={styles.textArea}
             value={inputText}
             onChangeText={setInputText}
             placeholder="Type your message"
+            multiline={isFocused}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(inputText.trim() === '')}
+            textStyle={isFocused ? { minHeight: 64 } : {}}
           />
           <Button onPress={handleSend}>Send</Button>
         </View>
@@ -97,7 +103,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  input: {
+  textArea: {
     flex: 1,
     marginRight: '2%',
   },
