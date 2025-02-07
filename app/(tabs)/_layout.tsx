@@ -1,6 +1,11 @@
 import React from 'react';
-import ChatScreen from './index'; // Asegúrate de que la ruta sea correcta
+import { ChatProvider } from './ChatContext';
+import ChatScreen from './index';
 
 export default function TabLayout() {
-  return <ChatScreen />;
+  return (
+    <ChatProvider>
+      <ChatScreen />
+    </ChatProvider>
+  );
 }
