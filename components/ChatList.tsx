@@ -3,6 +3,7 @@ import { View, StyleSheet, Dimensions, Text } from 'react-native';
 import { List } from '@ui-kitten/components';
 import { ChatContext } from '../app/(tabs)/ChatContext';
 import Markdown from 'react-native-markdown-display';
+import * as Animatable from 'react-native-animatable';
 
 const { width, height } = Dimensions.get('window');
 
@@ -47,16 +48,22 @@ const ChatList: React.FC = () => {
   const { messages, listRef, isBotTyping } = useContext(ChatContext);
 
   const renderItem = ({ item }: { item: Message }) => (
-    <View style={[
-      styles.messageContainer,
-      item.sender === 'user' ? styles.userMessage : styles.botMessage
-    ]}>
+    <Animatable.View
+      style={[
+        styles.messageContainer,
+        item.sender === 'user' ? styles.userMessage : styles.botMessage,
+        isBotTyping && item.id === -1 ? { opacity: 0.5 } : null
+      ]}
+      animation={isBotTyping && item.id === -1 ? "flash" : undefined}
+      iterationCount="infinite"
+      duration={2500}
+    >
       {item.sender === 'bot' ? (
         <Markdown style={{ body: styles.messageText }}>{item.text}</Markdown>
       ) : (
         <Text style={styles.messageText}>{item.text}</Text>
       )}
-    </View>
+    </Animatable.View>
   );
 
   return (
