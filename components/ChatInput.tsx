@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { View, StyleSheet, Dimensions, Alert } from 'react-native';
 import { Input, Button } from '@ui-kitten/components';
 import { ChatContext } from '../app/(tabs)/ChatContext';
+import { ConnectionContext } from '../app/(tabs)/index';
 
 const { width } = Dimensions.get('window');
 
@@ -20,8 +21,13 @@ const ChatInput: React.FC = () => {
   const [inputText, setInputText] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const { handleSend } = useContext(ChatContext);
+  const { isConnected } = useContext(ConnectionContext);
 
   const handleSendMessage = () => {
+    if (!isConnected) {
+      Alert.alert('Error', 'No internet connection');
+      return;
+    }
     if (inputText.trim() === '') {
       Alert.alert('Error', 'Message cannot be empty');
       return;
