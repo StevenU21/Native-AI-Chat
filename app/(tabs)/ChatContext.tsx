@@ -53,7 +53,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
         }
 
         const response = await axios.post(API_URL, {
-          model: "gpt-4o",
+          model: "gpt-3.5-turbo",
           messages: [{ role: "user", content: text }],
           temperature: 0.7
         }, {
