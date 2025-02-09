@@ -1,6 +1,6 @@
 import React, { createContext, useState, useRef, useEffect, ReactNode } from 'react';
 import { List } from '@ui-kitten/components';
-import 'dotenv/config';
+import { API_URL, API_KEY } from '@env';
 
 interface Message {
   id: number;
@@ -47,18 +47,15 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       setIsBotTyping(true);
 
       try {
-        const url = process.env.API_URL;
-        const apiKey = process.env.API_KEY;
-
-        if (!url || !apiKey) {
+        if (!API_URL || !API_KEY) {
           throw new Error('Las variables de entorno API_URL y API_KEY deben estar definidas');
         }
 
-        const response = await fetch(url, {
+        const response = await fetch(API_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`
+            "Authorization": `Bearer ${API_KEY}`
           },
           body: JSON.stringify({
             model: "gpt-4o",
