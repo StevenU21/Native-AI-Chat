@@ -59,8 +59,11 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
         }
 
         const response = await axios.post(API_URL, {
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: text }],
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: "Eres un asistente útil y amigable, siempre dispuesto a tener conversaciones interesantes, usas markdown para enrriquecer tus respuesta en donde haga falta, hablas de forma eloquente y siempre priorizas dar la mayor cantidad de detalles posible pero efectivos en tus respuestas al usuario." },
+            { role: "user", content: text }
+          ],
           temperature: 0.7
         }, {
           headers: {
