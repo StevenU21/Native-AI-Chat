@@ -1,5 +1,6 @@
 import React, { createContext, useState, useRef, useEffect, ReactNode } from 'react';
 import { List } from '@ui-kitten/components';
+import axios from 'axios';
 
 interface Message {
   id: number;
@@ -46,22 +47,20 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       setIsBotTyping(true);
 
       try {
-        const response = await fetch('https://open-ai-api-models.domcloud.dev/api/chat', {
-          method: 'POST',
+        const response = await axios.post('https://open-ai-api-models.domcloud.dev/api/chat', {
+          text: text,
+          model: 'gpt-4o',
+          temperature: 0.7,
+          prompt: 'Eres una asistente virtual, experto en muchos temas de interes, como programación, ciencias, tecnología, psicologia, literatura etc, siempre hablando de forma eloquente, listo para manterner una conversaci[on fluida y dinámica con el usuario y siempre que puedas responder usando markdown, para enrriquecer tus respuestas.',
+        }, {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            text: text,
-            model: 'gpt-4o',
-            temperature: 0.7,
-            prompt: 'Eres una asistente virtual, experto en muchos temas de interes, como programación, ciencias, tecnología, psicologia, literatura etc, siempre hablando de forma eloquente, listo para manterner una conversaci[on fluida y dinámica con el usuario y siempre que puedas responder usando markdown, para enrriquecer tus respuestas.',
-          }),
         });
 
-        const data = await response.json();
+        const data = response.data;
 
-        if (response.ok && data.bot_message) {
+        if (response.status === 200 && data.bot_message) {
           setMessages(prevMessages => [
             ...prevMessages,
             { text: data.bot_message, id: prevMessages.length, sender: 'bot' },
