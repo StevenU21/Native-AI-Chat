@@ -1,5 +1,6 @@
 import React, { createContext, useState, useRef, useEffect, ReactNode } from 'react';
 import { List } from '@ui-kitten/components';
+import axios from 'axios';
 import { API_URL, API_KEY } from '@env';
 
 interface Message {
@@ -51,22 +52,20 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
           throw new Error('Las variables de entorno API_URL y API_KEY deben estar definidas');
         }
 
-        const response = await fetch(API_URL, {
-          method: "POST",
+        const response = await axios.post(API_URL, {
+          model: "gpt-4o",
+          messages: [{ role: "user", content: text }],
+          temperature: 0.7
+        }, {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${API_KEY}`
-          },
-          body: JSON.stringify({
-            model: "gpt-4o",
-            messages: [{ role: "user", content: text }],
-            temperature: 0.7
-          })
+          }
         });
 
-        const data = await response.json();
+        const data = response.data;
 
-        if (response.ok && data.choices && data.choices.length > 0) {
+        if (response.status === 200 && data.choices && data.choices.length > 0) {
           setMessages(prevMessages => [
             ...prevMessages,
             { text: data.choices[0].message.content.trim(), id: prevMessages.length, sender: 'bot' },
