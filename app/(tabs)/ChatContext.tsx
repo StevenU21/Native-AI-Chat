@@ -15,6 +15,7 @@ interface ChatContextProps {
   handleSend: (text: string, setInputText: (text: string) => void) => void;
   isBotTyping: boolean;
   setIsBotTyping: (isTyping: boolean) => void;
+  clearMessages: () => void;
 }
 
 export const ChatContext = createContext<ChatContextProps>({
@@ -23,6 +24,7 @@ export const ChatContext = createContext<ChatContextProps>({
   handleSend: () => { },
   isBotTyping: false,
   setIsBotTyping: () => { },
+  clearMessages: () => {},
 });
 
 interface Props {
@@ -33,6 +35,10 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isBotTyping, setIsBotTyping] = useState(false);
   const listRef = useRef<List>(null);
+
+  const clearMessages = () => {
+    setMessages([]);
+  };
 
   useEffect(() => {
     if (listRef.current) {
@@ -84,7 +90,7 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
   };
 
   return (
-    <ChatContext.Provider value={{ messages, listRef, handleSend, isBotTyping, setIsBotTyping }}>
+    <ChatContext.Provider value={{ messages, listRef, handleSend, isBotTyping, setIsBotTyping, clearMessages }}>
       {children}
     </ChatContext.Provider>
   );
