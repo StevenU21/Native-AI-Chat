@@ -1,6 +1,6 @@
 import React, { createContext, useState, useRef, useEffect, ReactNode } from 'react';
 import { List } from '@ui-kitten/components';
-import axios from 'axios';
+import 'dotenv/config';
 
 interface Message {
   id: number;
@@ -47,23 +47,32 @@ export const ChatProvider: React.FC<Props> = ({ children }) => {
       setIsBotTyping(true);
 
       try {
-        const response = await axios.post('https://open-ai-api-models.domcloud.dev/api/chat', {
-          text: text,
-          model: 'gpt-4o',
-          temperature: 0.7,
-          prompt: 'Eres una asistente virtual, experto en muchos temas de interes, como programación, ciencias, tecnología, psicologia, literatura etc, siempre hablando de forma eloquente, listo para manterner una conversaci[on fluida y dinámica con el usuario y siempre que puedas responder usando markdown, para enrriquecer tus respuestas.',
-        }, {
+        const url = process.env.API_URL;
+        const apiKey = process.env.API_KEY;
+
+        if (!url || !apiKey) {
+          throw new Error('Las variables de entorno API_URL y API_KEY deben estar definidas');
+        }
+
+        const response = await fetch(url, {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${apiKey}`
           },
+          body: JSON.stringify({
+            model: "gpt-4o",
+            messages: [{ role: "user", content: text }],
+            temperature: 0.7
+          })
         });
 
-        const data = response.data;
+        const data = await response.json();
 
-        if (response.status === 200 && data.bot_message) {
+        if (response.ok && data.choices && data.choices.length > 0) {
           setMessages(prevMessages => [
             ...prevMessages,
-            { text: data.bot_message, id: prevMessages.length, sender: 'bot' },
+            { text: data.choices[0].message.content.trim(), id: prevMessages.length, sender: 'bot' },
           ]);
         } else {
           console.error('Error:', data);
