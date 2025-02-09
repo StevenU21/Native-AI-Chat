@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { ApplicationProvider, Layout, TopNavigation, Text } from '@ui-kitten/components';
 import * as eva from '@eva-design/eva';
 import ChatList from '../../components/ChatList';
